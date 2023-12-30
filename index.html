@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: white; /* Initial background color is white */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden; /* Hide overflowing hearts */
+      position: relative;
+      transition: background-color 1s ease; /* Transition effect for background color change */
+    }
+
+    #countdown {
+      font-size: 4em;
+      margin-bottom: 20px;
+      color: #d9534f; /* Red text */
+    }
+
+    #message {
+      font-size: 2em;
+      color: #5bc0de; /* Blue text */
+      display: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .heart {
+      position: absolute;
+      color: #e44d98; /* Pink text */
+    }
+
+    /* Fireworks animation */
+    body.animate-fireworks {
+      background: url('https://example.com/fireworks-image.jpg') center center no-repeat fixed;
+      background-size: cover;
+    }
+
+    /* Romantic messages styling */
+    .romantic-message {
+      font-size: 2.5em;
+      color: #e44d98; /* Pink text */
+      margin-bottom: 20px;
+    }
+
+    .additional-message {
+      font-size: 1.5em;
+      color: #1e1e1e; /* Black text */
+    }
+  </style>
+</head>
+<body>
+
+<div id="countdown"></div>
+<div id="message">
+  <div class="romantic-message">I Love You &hearts;</div>
+  <div class="additional-message">No matter how we are in life with each other, just remember that I love you.</div>
+</div>
+
+<script>
+  // Set the date we're counting down to (January 5, 2024, 12:00 PM Pakistan time)
+  const countDownDate = new Date("Jan 5, 2024 12:00:00 GMT+0500").getTime();
+  //const countDownDate = new Date().getTime() + 20000; // Countdown for 5 seconds from the current time
+
+  // Update the countdown every 1 second
+  const x = setInterval(function() {
+    const now = new Date().getTime();
+    const distance = countDownDate - now;
+
+    if (distance <= 0) {
+      clearInterval(x);
+      document.getElementById("countdown").style.display = "none";
+      document.getElementById("message").style.display = "block";
+
+      // Add the 'animate-fireworks' class to the body for the fireworks animation
+      document.body.classList.add('animate-fireworks');
+      createHearts();
+    } else {
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+      // Dynamically update the background color on each second
+      const percent = 1 - (distance / (countDownDate - (now - 1000)));
+      const color = interpolateColor(percent, '#ffffff', '#ffecf2');
+      document.body.style.backgroundColor = color;
+    }
+  }, 1000);
+
+  // Function to create hearts randomly around the page
+  function createHearts() {
+    const numHearts = 50; // Adjust the number of hearts as needed
+    const container = document.body;
+
+    for (let i = 0; i < numHearts; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "&hearts;";
+      const size = Math.random() * 20 + 10; // Random size between 10 and 30
+      heart.style.fontSize = `${size}px`;
+      const xPos = Math.random() * window.innerWidth;
+      const yPos = Math.random() * window.innerHeight;
+      heart.style.left = `${xPos}px`;
+      heart.style.top = `${yPos}px`;
+
+      container.appendChild(heart);
+    }
+  }
+
+  // Function to interpolate between two colors
+  function interpolateColor(percent, color1, color2) {
+    const hex = function (x) {
+      x = x.toString(16);
+      return (x.length === 1) ? '0' + x : x;
+    };
+
+    const r1 = parseInt(color1.slice(1, 3), 16);
+    const g1 = parseInt(color1.slice(3, 5), 16);
+    const b1 = parseInt(color1.slice(5, 7), 16);
+
+    const r2 = parseInt(color2.slice(1, 3), 16);
+    const g2 = parseInt(color2.slice(3, 5), 16);
+    const b2 = parseInt(color2.slice(5, 7), 16);
+
+    const r = Math.round(r1 + percent * (r2 - r1));
+    const g = Math.round(g1 + percent * (g2 - g1));
+    const b = Math.round(b1 + percent * (b2 - b1));
+
+    return `#${hex(r)}${hex(g)}${hex(b)}`;
+  }
+</script>
+
+</body>
+</html>
